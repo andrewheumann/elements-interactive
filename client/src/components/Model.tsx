@@ -3,8 +3,8 @@ import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { convertParameters } from './convertParameters'
 
-const apiUrl = process.env.API_BASE_URL || 'http://localhost:5221';
-console.log(process.env)
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5221/';
+console.log(apiUrl)
 
 function base64ToBlob(base64: string, type = "application/octet-stream") {
     const binStr = atob(base64)
@@ -28,7 +28,7 @@ export default function Model({ endpoint, parameters, onError }: { endpoint: str
         // Async function to fetch GLTF data based on parameters
         const fetchGltfData = async (params: typeof parameters) => {
             try {
-                const response = await fetch(`${apiUrl}/${endpoint}`, {
+                const response = await fetch(`${apiUrl}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: convertParameters(params),

@@ -10,10 +10,10 @@
 
 	"containerEnv": {
 		"DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "true",
-		"API_BASE_URL": "https://jubilant-zebra-g5q4g759xjqh9xq5-5221.app.github.dev/"
+		"NEXT_PUBLIC_API_BASE_URL": "https://jubilant-zebra-g5q4g759xjqh9xq5-5221.app.github.dev/"
 	},
 	"remoteEnv": {
-		"API_BASE_URL": "https://jubilant-zebra-g5q4g759xjqh9xq5-5221.app.github.dev/"
+		"NEXT_PUBLIC_API_BASE_URL": "https://jubilant-zebra-g5q4g759xjqh9xq5-5221.app.github.dev/"
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.

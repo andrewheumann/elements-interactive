@@ -31,8 +31,12 @@
         },
         {
             "label": "Start Client and Server",
-            "dependsOn": ["Start Client", "Start Server"],
-            "dependsOrder": "parallel"
+            "dependsOn": [
+                "Start Client",
+                "Start Server"
+            ],
+            "dependsOrder": "parallel",
+            "problemMatcher": []
         },
         {
             "label": "build",
