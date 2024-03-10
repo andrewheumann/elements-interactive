@@ -14,7 +14,7 @@ export default function ThreeDView() {
         setError(error?.message);
     };
 
-    // The parameters for the model should match the parameters in the `ModelRequest` class on the server.
+    // The parameters for the model should match the parameters in the `CubeRequest` class on the server.
     const cubeParameters = convertParameters(
         useControls('cube', {
             Width: 10,
@@ -71,7 +71,7 @@ export default function ThreeDView() {
                 /> */}
                 {/* Or you can pass in parameters from `useControls`, which makes the parameters interactive. */}
                 <Model
-                    endpoint={'model'}
+                    endpoint={'cube'}
                     parameters={cubeParameters}
                     onError={onError}
                 />

@@ -15,3 +15,68 @@ The Client is a Next.JS React app that uses [React-Three-Fiber](https://docs.pmn
 - Use the VS Code Command Palette (cmd/ctrl + shift + p) to "Run Task". Choose the "Start Client and Server" option.
 - When you see the message "Your application running on port 3000 is available", click the "Open In Browser" button.
 ![Open In Browser](./docs/open-in-browser.png)
+
+
+## Customizing
+To build your own geometric logic, you'll need to make a few changes on the client and the sever. 
+### Server (The geometry logic)
+Edit `server/Program.cs`
+```cs
+app.MapPost("/cube", (ModelRequest request) =>
+{
+    var cube = new Mass(Polygon.Rectangle(Math.Max(0.1, request.Width), Math.Max(0.1, request.Depth)), Math.Max(0.1, request.Height))
+    {
+        Material = new Material("cube", request.Color)
+    };
+    var model = new Model();
+
+    model.AddElement(cube);
+    return model.ToResult();
+});
+```
+
+You can edit this endpoint, or copy-paste to create a new one. Be sure to:
+- give it a unique name
+- define the inputs as a class (See `ModelRequest` and `GridRequest` for examples)
+- create an `Elements.Model` and add objects to it
+- return `model.ToResult()` at the end.
+
+Note: sometimes hot reload can fail to recognize the new endpoint. In the `Terminal` tab at the bottom, try closing the `Start Server` terminal on the right, and running the `Start Server` task again. 
+
+### Client (The UI logic)
+Edit `client/src/components/ThreeDView.tsx`.
+
+#### Add the component
+Within the `<Canvas>` tag, add an instance of `<Model>`:
+```js
+<Model
+    endpoint={'cube'} // This has to match your endpoint name in Program.cs
+    parameters={cubeParameters} // we'll define this next
+    onError={onError}
+/>
+```
+#### Define the parameters
+
+You can define the parameters directly inline at the top of `function ThreeDView`, before the `return`:
+```ts
+const cubeParameters = convertParameters({
+    Width: 10,
+    Depth: 20,
+    Height: 10,
+    Color: '#ff0000',
+})
+```
+`convertParameters` handles making sure values like colors + 2d points get converted to a format the Elements library can understand.
+
+You can also make the parameters interactive, by using `useControls` from the [Leva](https://github.com/pmndrs/leva) library:
+```ts
+const cubeParameters = convertParameters(
+    useControls('cube', {
+        Width: 10,
+        Depth: 20,
+        Height: 10,
+        Color: '#ff0000',
+    }))
+```
+
+This will display a UI that lets you edit the parameter values in realtime.
