@@ -1,0 +1,12 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!csharp
+
+#r "nuget: Hypar.Elements, *-*"
+
+#!csharp
+
+var mass = new Mass(Polygon.Star(5, 3, 5),4, new Material("Red", Colors.Red));
+return mass;
