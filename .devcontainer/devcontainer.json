@@ -27,7 +27,8 @@
 			},
 			"5221": {
 				"label": "Elements Server",
-				"visibility": "public"
+				"visibility": "public",
+				"onAutoForward": "silent"
 			}
 	},
 

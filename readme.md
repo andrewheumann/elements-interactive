@@ -9,5 +9,7 @@ The Server is a dotnet 8 ASP.net Minimal API that serves up a `/model` endpoint 
 The Client is a Next.JS React app that uses [React-Three-Fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction) to render the model returned from the server, and [Leva](https://github.com/pmndrs/leva) to consume the inputs / parameters to drive model creation.
 
 ## How to start:
-
+- If you're just opening the codespace for the first time, give it a minute to get everything loaded / installed.
 - Use the VS Code Command Palette (cmd/ctrl + shift + p) to "Run Task". Choose the "Start Client and Server" option.
+- When you see the message "Your application running on port 3000 is available", click the "Open In Browser" button.
+![Open In Browser](./docs/open-in-browser.png)
