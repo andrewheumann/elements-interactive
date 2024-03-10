@@ -30,10 +30,21 @@
             "problemMatcher": []
         },
         {
+            "label": "Make Server Port Public",
+            "type": "shell",
+            "command": "gh codespace ports visibility 5221:public -c $CODESPACE_NAME",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Start Client and Server",
             "dependsOn": [
                 "Start Client",
-                "Start Server"
+                "Start Server",
+                "Make Server Port Public",
             ],
             "dependsOrder": "parallel",
             "problemMatcher": []
