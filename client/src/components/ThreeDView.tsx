@@ -23,26 +23,26 @@ export default function ThreeDView() {
             Color: '#ff0000',
         }))
 
-    // const gridParameters = convertParameters(useControls('grid', {
-    //     U: {
-    //         value: 4,
-    //         min: 1,
-    //         max: 12,
-    //         step: 1,
-    //       },
-    //     V: {
-    //         value: 4,
-    //         min: 1,
-    //         max: 12,
-    //         step: 1,
-    //       },
-    //     Size: 10.0,
-    //     Point: {
-    //         value: { x: 0, y: 0 },
-    //         max: 20,
-    //         min: -20,
-    //     }
-    // }))
+    const gridParameters = convertParameters(useControls('grid', {
+        U: {
+            value: 4,
+            min: 1,
+            max: 12,
+            step: 1,
+          },
+        V: {
+            value: 4,
+            min: 1,
+            max: 12,
+            step: 1,
+          },
+        Size: 10.0,
+        Point: {
+            value: { x: 0, y: 0 },
+            max: 20,
+            min: -20,
+        }
+    }))
 
     return (
         <div className="relative w-full h-full"> {/* Ensure the parent div is relative for absolute positioning within it */}
@@ -76,11 +76,11 @@ export default function ThreeDView() {
                     onError={onError}
                 />
                 {/* You can have as many different endpoints as you want! */}
-                {/* <Model
+                <Model
                     endpoint={'grid'}
                     parameters={gridParameters}
                     onError={onError}
-                /> */}
+                />
 
             </Canvas>
             {error && (

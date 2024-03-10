@@ -32,7 +32,7 @@
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cd client && npm install",
+	"postCreateCommand": "echo NEXT_PUBLIC_API_URL=https://$CODESPACE_NAME-5221.$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN/ > client/.env && cd client && npm install",
 
 	// Configure tool-specific properties.
 	"customizations": {
