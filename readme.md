@@ -7,3 +7,7 @@ The Server is a dotnet 8 ASP.net Minimal API that serves up a `/model` endpoint 
 
 ## Client
 The Client is a Next.JS React app that uses React-Three-Fiber to render the model returned from the server, and Reva to consume the inputs / parameters to drive model creation.
+
+## How to start:
+
+- Use the VS Code Command Palette (cmd/ctrl + shift + p) to "Run Task". Choose the "Start Client and Server" option.
