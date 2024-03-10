@@ -31,7 +31,6 @@ public static class App
 
         var app = builder.Build();
         app.UseCors("AllowAnyOrigin");
-        app.UseHttpsRedirection();
         return app;
     }
 

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { useControls } from 'leva'
 import { convertParameters } from './convertParameters'
+
+const apiUrl = process.env.API_BASE_URL || 'http://localhost:5221';
+console.log(process.env)
 
 function base64ToBlob(base64: string, type = "application/octet-stream") {
     const binStr = atob(base64)
@@ -23,10 +25,10 @@ export default function Model({ endpoint, parameters, onError }: { endpoint: str
     const [gltfUrl, setGltfUrl] = useState<string | null>(null)
 
     useEffect(() => {
-        // Async function to fetch GLTF data based on Size
+        // Async function to fetch GLTF data based on parameters
         const fetchGltfData = async (params: typeof parameters) => {
             try {
-                const response = await fetch(`http://localhost:5221/${endpoint}`, {
+                const response = await fetch(`${apiUrl}/${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: convertParameters(params),
@@ -44,7 +46,7 @@ export default function Model({ endpoint, parameters, onError }: { endpoint: str
         }
 
         fetchGltfData(parameters)
-    }, [parameters, onError]) // This will re-run the effect whenever the Size value changes
+    }, [parameters, onError]) // This will re-run the effect whenever the parameters change
 
     return (
         <Suspense fallback={<mesh></mesh>}>

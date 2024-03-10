@@ -9,17 +9,27 @@
 	},
 
 	"containerEnv": {
-		"DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "true"
+		"DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "true",
+		"API_BASE_URL": "https://jubilant-zebra-g5q4g759xjqh9xq5-5221.app.github.dev/"
+	},
+	"remoteEnv": {
+		"API_BASE_URL": "https://jubilant-zebra-g5q4g759xjqh9xq5-5221.app.github.dev/"
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [3000],
+	"forwardPorts": [3000, 5221],
 	"portsAttributes": {
 			"3000": {
 				"label": "Front End"
+			},
+			"5221": {
+				"label": "Elements Server",
+				"protocol": "https",
+				"onAutoForward": "silent",
+				"requireLocalPort": true
 			}
 	},
 

@@ -7,7 +7,7 @@ var app = App.InitializeApp(args);
 
 app.MapPost("/model", (ModelRequest request) =>
 {
-     Console.WriteLine("Got Model request");
+    Console.WriteLine("Got Model request");
     var cube = new Mass(Polygon.Rectangle(Math.Max(0.1, request.Width), Math.Max(0.1, request.Depth)), Math.Max(0.1, request.Height))
     {
         Material = new Material("cube", request.Color)
