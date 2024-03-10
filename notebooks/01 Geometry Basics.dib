@@ -1,0 +1,98 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!markdown
+
+# Import Hypar Library
+
+#!csharp
+
+#r "nuget: Hypar.Elements, *-*"
+
+#!markdown
+
+# Points, Lines, and Polylines
+Hypar is a 3d world. X and Y form the ground, and Z is up, like most architectural modeling applications.
+
+Hypar uses the `Vector3` type for both points (positions) and vectors (directions). 
+
+Create a new `Vector3` with the `Vector3` constructor:
+
+#!csharp
+
+var myVector = new Vector3(2,4,5);
+
+#!markdown
+
+Create a `Line` with the `Line` constructor, and pass it two `Vector3`s:
+
+#!csharp
+
+var a = new Vector3(0,0,0);
+var b = new Vector3(10, 5, 7);
+var line = new Line(a, b);
+return line;
+
+#!markdown
+
+Create a `Polyline` with the `Polyline` constructor. You can pass it a `List` of `Vector3`, or directly pass it any number of `Vector3`s in the arguments.
+
+#!csharp
+
+// A slightly more verbose way...
+var points = new List<Vector3>();
+points.Add(new Vector3(0, 0, 0));
+points.Add(new Vector3(2, 0, 0));
+points.Add(new Vector3(2, 2, 0));
+points.Add(new Vector3(0, 2, 0));
+var polyline1 = new Polyline(points);
+return polyline1;
+
+#!markdown
+
+You can skip the `new Vector3` part in many cases. 
+
+(Polyline takes a `params[]` argument, and we auto-convert Tuples with 2 and 3 elements to `Vector3`, if you're curious how this works.)
+
+#!csharp
+
+// A slightly shorter way to do the same thing:
+var polyline2 = new Polyline((0,0), (2,0), (2,2), (0,2), (0,2,5));
+return polyline2;
+
+#!markdown
+
+# Polygons
+A `Polygon` is just like a `Polyline`, except it represents a closed shape, and it must be planar.
+
+#!csharp
+
+var polygon = new Polygon((0,0), (2,2), (4,0), (4,4), (0,4));
+return polygon;
+
+#!markdown
+
+There are also convenience shapes for common cases: 
+- Rectangle
+- Star
+- L
+- U
+- Ngon
+
+Also note how we can display multiple polylines at once in a notebook by returning a list or array:
+
+#!csharp
+
+var rectangle = Polygon.Rectangle(10,10);
+var star = Polygon.Star(5,3,5);
+var l = Polygon.L(2, 2, 0.5);
+var u = Polygon.U(5, 3, 0.75);
+var hexagon = Polygon.Ngon(6, 10);
+return new [] { rectangle, star, l, u, hexagon };
+
+#!markdown
+
+# Exercise
+
+Use a for loop to create 20 concentric rectangles, each 1 unit larger than the previous one. Return them in a list so we can see them all.

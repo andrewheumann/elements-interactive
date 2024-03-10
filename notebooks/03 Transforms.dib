@@ -1,0 +1,164 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!markdown
+
+### Setup
+
+#!csharp
+
+#r "nuget: Hypar.Elements, *-*"
+using Elements.Geometry.Solids;
+Formatter.Register<SolidOperation>((solidOp, writer) => {
+    var model = new Model();
+    model.AddElement(new GeometricElement { Representation = solidOp});
+    var src = GetModelViewerSrc(model);
+    writer.Write(src);
+
+}, "text/html");
+Formatter.Register<Representation>((representation, writer) => {
+    var model = new Model();
+    model.AddElement(new GeometricElement { Representation = representation});
+    var src = GetModelViewerSrc(model);
+    writer.Write(src);
+
+}, "text/html");
+Formatter.Register<IEnumerable<SolidOperation>>((solidOps, writer) => {
+    var model = new Model();
+    foreach(var solidOp in solidOps) {
+        model.AddElement(new GeometricElement { Representation = solidOp});
+    }
+    var src = GetModelViewerSrc(model);
+    writer.Write(src);
+
+}, "text/html");
+Formatter.Register<Transform>((xform, writer) => {
+    var model = new Model();
+        model.AddElements(xform.ToModelCurves());
+    var src = GetModelViewerSrc(model);
+    writer.Write(src);
+
+}, "text/html");
+Formatter.Register<IEnumerable<Transform>>((xforms, writer) => {
+    var model = new Model();
+    foreach(var xform in xforms) {
+        // Make transforms at the origin larger, to serve as the "world axes."
+        if(xform.Origin.DistanceTo((0,0,0)) == 0) {
+            model.AddElements(xform.ToModelCurves(new Transform().Scaled(10)));
+        } else {
+            model.AddElements(xform.ToModelCurves());
+        }
+    }
+    var src = GetModelViewerSrc(model);
+    writer.Write(src);
+
+}, "text/html");
+
+List<Line> FinalHypar() {
+    var line = new Line((-1,0,0), (1,0,0));
+    var line2 = new Line((0, -1, 0), (0, 1, 0));
+    var hyparLines = new List<Line>();
+    for(int i=-10;i<10;i++) {
+        var rotationAboutYAxis = new Transform().Rotated(Vector3.YAxis, i*2);
+        var translationAlongYAxis = new Transform().Moved(0,i*0.1,0);
+        var transform = rotationAboutYAxis.Concatenated(translationAlongYAxis);
+        var transformedLine = line.TransformedLine(transform);
+        hyparLines.Add(transformedLine);
+
+        var rotationAboutXAxis = new Transform().Rotated(Vector3.XAxis, -i*2);
+        var translationAlongXAxis = new Transform().Moved(i*0.1,0,0);
+        var transform2 = rotationAboutXAxis.Concatenated(translationAlongXAxis);
+        var transformedLine2 = line2.TransformedLine(transform2);
+        hyparLines.Add(transformedLine2);
+    }
+    return hyparLines;
+}
+
+#!markdown
+
+# Transforms
+
+Moving, rotating, and scaling geometry is achieved through the use of `Transform`s. These are a common concept in computer graphics, but they take a little getting used to. You can think of a transform as an object which contains a set of "instructions" for how to modify the scale, rotation, and position of any element it is applied to. It's also sometimes useful to think of a transform as an oriented coordinate frame, similar to a `Plane` in Grasshopper.
+
+We're using a special trick here to render them as a set of axes. The transform constructed with `new Transform()` is located at (0,0,0), with its X, Y, and Z axes oriented along the world X, Y, and Z axes.
+
+#!csharp
+
+var transform = new Transform();
+return transform;
+
+#!markdown
+
+There are a number of `Transform` constructors available:
+
+`new Transform()` - 
+`new Transform(3, 4, 5)` - 
+`new Transform(new Vector3(2,1,7), new Vector3(1,1,1))` - Create a transform that originates at (2,1,7), with its normal (Z-axis) pointing along (1,1,1)
+`new Transform(new Vector3(1,2,4), new Vector3(0,1,0), new Vector3(1,0,1))` 
+
+#!csharp
+
+// Create the identity transform (no change / world origin)
+var origin = new Transform();
+// Create a world-aligned transform at the position (2, 2, 2) (applying this transform can also be thought of as "moving" an object from 0,0,0 to 3,4,5)
+var positionedTransform = new Transform(2, 2, 2);
+// Create a transform that originates at (2,1,7), with its normal (Z-axis) pointing along (1,1,1)
+var orientedTransform = new Transform(new Vector3(5, 1, 3), new Vector3(1, 1, 1));
+// Create a transform that originates at (7,2,4), with its X-axis pointing along (0,1,0), and its Z-axis pointing along (-1,0,1)
+var alignedTransform = new Transform(new Vector3(7, 2, 4), new Vector3(0, 1, 0), new Vector3(-1, 0, 1));
+return new [] { origin, positionedTransform, orientedTransform, alignedTransform };
+
+#!markdown
+
+Often it's easier to apply sequential transformations to an override, rather than trying to construct a single transform that does everything you want. 
+`Elements` supports two versions of all transform methods: one that modifies the current transform (like `Move`, `Rotate`, and `Scale`,) and one that makes a modified copy of it (like `Moved`, `Rotated`, and `Scaled`).
+
+For example, if you want to move an object 5 units in the X direction, then rotate it 45 degrees around the Z axis, you can construct a transform like this:
+
+#!csharp
+
+var origin = new Transform();
+var transform = new Transform().Moved((5,0,0)).Rotated(Vector3.ZAxis, 45);
+return new [] {origin, transform};
+
+#!markdown
+
+OK, that's enough floating axes in space. Let's see how to use transforms.
+
+We can modify profiles, polygons, lines, and other curves using their `Transformed` methods.
+
+#!csharp
+
+var star = Polygon.Star(5,2,7);
+var starMoved = star.TransformedPolygon(new Transform().Moved(5,1,3));
+return new [] {star, starMoved};
+
+#!csharp
+
+var line = new Line((-1,0,0), (1,0,0));
+var hyparLines = new List<Line>();
+for(int i=-10;i<10;i++) {
+    var rotationAboutYAxis = new Transform().Rotated(Vector3.YAxis, i*2);
+    var translationAlongYAxis = new Transform().Moved(0,i*0.1,0);
+    // use "Concatenated" to combine the two transforms
+    var transform = rotationAboutYAxis.Concatenated(translationAlongYAxis);
+    var transformedLine = line.TransformedLine(transform);
+    hyparLines.Add(transformedLine);
+}
+return hyparLines;
+
+#!markdown
+
+# Exercise
+
+See if you can construct the "other axis" of the Hyperbolic Paraboloid seen above, and display both: 
+
+#!csharp
+
+// Your end result should look like this:
+return FinalHypar();
+
+#!csharp
+
+// Your code here:

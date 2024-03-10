@@ -1,0 +1,116 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!csharp
+
+#r "nuget: Hypar.Elements, *-*"
+using Elements.Geometry.Solids;
+
+#!markdown
+
+# Elements + Models
+
+We're almost done with the basics of Elements. We've covered points, lines, polylines, polygons, profiles, laminas, extrudes, sweeps, and transforms.
+
+Now, we'll put it all together to create `Element`s and `Model`s, which will be the basis for the Hypar Functions we create and publish on Hypar.
+
+All this time we've been working with _primitives_, rather than true elements. 
+
+When you do `return` in a notebook, we render these primitives so you can see what's going on, but as we'll see later, if you try to output these in a model on Hypar, nothing will happen. To make something visible on Hypar, we need to create real `Element`s, which are flexible, customizable BIM entities, which can have visible geometry and other properties.
+
+When you build a function, you will set a single `Model` as the output of that function, and add many `Element`s to it, with `Model.AddElement`.
+
+#!csharp
+
+var model = new Model();
+var width = 10;
+var length = 19;
+var height = 20;
+var footprint = Polygon.Rectangle(width, length);
+// Masses can be used for building masses
+var mass = new Mass(footprint, height);
+model.AddElement(mass);
+return model;
+
+#!csharp
+
+// Add some floors
+for(int i=0; i<20; i+=3) {
+    // Floor elements represent floors
+    var floor = new Floor(footprint, 0.1);
+    floor.Transform = new Transform(0,0,i);
+    model.AddElement(floor);
+}
+return model;
+
+#!csharp
+
+// Create a column grid
+var xBays = 3;
+var yBays = 7;
+for(int i=0;i<=xBays;i++) {
+    for(int j=0;j<=yBays;j++) {
+        var columnLocation = new Vector3((i / (double)xBays) * width - width / 2.0, (j / (double)yBays) * length - length / 2.0, 0);
+        var columnLine = new Line((0,0,0), (0,0,height));
+        var columnProfile = Polygon.Rectangle(0.5,0.5);
+        var column = new Column(columnLocation, height, null, columnProfile);
+        model.AddElement(column);
+    }
+}
+return model;
+
+#!markdown
+
+These few built-in types have built-in ideas about how they look: they have default `Representation`s, and default `Material`s. 
+
+A `Floor` creates an `Extrude`, and gets a `Concrete` material, and so on. 
+
+Eventually we'll be defining our own element types, but for now we can also create elements with custom representations by using the generic `GeometricElement` class. Let's borrow some code from a previous chapter:
+
+#!csharp
+
+// Construct a representation from various solid operations
+var baseExtrude = new Extrude(Polygon.Ngon(6, 5), 6, new Vector3(0,0,1));
+var void1 = new Extrude(Polygon.Ngon(4, 2), 7, Vector3.ZAxis, true);
+var void2 = new Sweep(Polygon.Star(3, 2, 5), new Line((-5,0,3), (5, 0, 3)),0,0,0, true);
+var representation = new Representation(new List<SolidOperation> { baseExtrude, void1, void2 });
+
+#!csharp
+
+// Create some elements with that representation.
+
+var geometricElementModel = new Model();
+var random = new Random(5);
+for(int i=0;i<10;i++) {
+    var transform = new Transform(i * 10, 0, 0);
+    var geometricElement = new GeometricElement { 
+        Representation = representation, 
+        Transform = transform,
+        Material = random.NextMaterial(false), 
+    };
+    geometricElementModel.AddElement(geometricElement);
+}
+return geometricElementModel;
+
+#!markdown
+
+To draw curves as elements, you can use the `ModelCurve` class. In fact, this is what has been happening under the hood when you `return` a curve directly in a notebook — we just automatically create a `ModelCurve` from it for you.
+
+#!csharp
+
+var curvesModel = new Model();
+var u = Polygon.U(5,5,1);
+for(int i=0;i<20;i++) {
+    var transform = new Transform().Rotated(new Vector3(1,1,1).Unitized(), i*10);
+    var color = Colors.Red.Lerp(Colors.Green, i/20.0);
+    var modelCurve = new ModelCurve(u, new Material("curve", color), transform);
+    curvesModel.AddElement(modelCurve);
+}
+return curvesModel;
+
+#!csharp
+
+var modelJson = curvesModel.ToJson();
+var path = "./curves.json";
+File.WriteAllText(path, modelJson);

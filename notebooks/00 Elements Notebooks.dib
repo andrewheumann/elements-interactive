@@ -1,0 +1,59 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!markdown
+
+# Introducing Hypar.Elements
+
+#!markdown
+
+In order to get you familiarized with the Elements library, we've set up a series of .NET interactive notebooks. Elements is designed to work seamlessly with notebooks, to make it easy to prototype and explore the code.
+
+If you haven't used code notebooks like jupyter before, this might take a little getting used to — here's a brief overview.
+
+#!markdown
+
+Some cells are Markdown cells, like this one. You can double-click on them to edit them. When you're done editing, you can run the cell by pressing `Ctrl+Enter` or `Shift+Enter`.
+
+#!markdown
+
+Edit this cell by double-clicking and writing your name:
+
+Hello, my name is _________
+
+#!markdown
+
+Cells can also contain code that can execute. In these notebooks, C# code is supported. Return a value from a cell to display it. Try running the following cell:
+
+#!csharp
+
+var sum = 10 + 20;
+return sum;
+
+#!markdown
+
+You can import packages from nuget with a special syntax, like the cell below. Try running this cell. It will import the Hypar.Elements package, with the latest alpha version. The Hypar.Elements package is also configured with some special extra features just for notebooks, so you'll see a message at the end.
+
+#!csharp
+
+#r "nuget: Hypar.Elements, *-*"
+
+#!markdown
+
+Just like you can return a value from a cell, you can also return and display 3d geometry built with elements. Try running the following cell (don't worry about the code too much yet, we'll explain in the following notebooks).
+
+#!csharp
+
+var mass = new Mass(Polygon.Star(5, 3, 5),4, new Material("Red", Colors.Red));
+return mass;
+
+#!markdown
+
+You should be able to zoom in and out and orbit the model. Try it!
+
+#!markdown
+
+# Exercise
+
+Create a new code cell. Write some code and execute it! Print "Hello world," or do some basic math. (Don't worry, we'll get to more interesting exercises in the next notebooks.)
