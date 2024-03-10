@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Client",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            },
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start Server",
+            "type": "shell",
+            "command": "dotnet watch run",
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start Client and Server",
+            "dependsOn": ["Start Client", "Start Server"],
+            "dependsOrder": "parallel"
+        }
+    ]
+}
