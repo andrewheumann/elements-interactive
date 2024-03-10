@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { convertParameters } from './convertParameters'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5221/';
 console.log(apiUrl)
@@ -31,7 +30,7 @@ export default function Model({ endpoint, parameters, onError }: { endpoint: str
                 const response = await fetch(`${apiUrl}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: convertParameters(params),
+                    body: params,
                     mode: 'cors',
                 })
                 const data = await response.json()

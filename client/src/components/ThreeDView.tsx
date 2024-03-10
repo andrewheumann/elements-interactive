@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import Model from "./Model";
 import { useState } from "react";
 import { useControls } from "leva";
+import { convertParameters } from "./convertParameters";
 
 export default function ThreeDView() {
     // keep the error as a string, or null if no error
@@ -14,14 +15,15 @@ export default function ThreeDView() {
     };
 
     // The parameters for the model should match the parameters in the `ModelRequest` class on the server.
-    const cubeParameters = useControls('cube', {
-        Width: 10,
-        Depth: 20,
-        Height: 10,
-        Color: '#ff0000',
-    })
+    const cubeParameters = convertParameters(
+        useControls('cube', {
+            Width: 10,
+            Depth: 20,
+            Height: 10,
+            Color: '#ff0000',
+        }))
 
-    // const gridParameters = useControls('grid', {
+    // const gridParameters = convertParameters(useControls('grid', {
     //     U: {
     //         value: 4,
     //         min: 1,
@@ -40,7 +42,7 @@ export default function ThreeDView() {
     //         max: 20,
     //         min: -20,
     //     }
-    // })
+    // }))
 
     return (
         <div className="relative w-full h-full"> {/* Ensure the parent div is relative for absolute positioning within it */}
