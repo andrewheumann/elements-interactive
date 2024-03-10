@@ -1,34 +1,54 @@
-'use client'
-import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import PostRequestElement from "./PostRequestElement";
-import { useState } from "react";
+import React, { useState, useEffect, Suspense } from 'react'
+import { useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { useControls } from 'leva'
+import { convertParameters } from './convertParameters'
 
-export default function Model() {
-    // keep the error as a string, or null if no error
-    const [error, setError] = useState<string | undefined>(undefined);
+function base64ToBlob(base64: string, type = "application/octet-stream") {
+    const binStr = atob(base64)
+    const len = binStr.length
+    const arr = new Uint8Array(len)
+    for (let i = 0; i < len; i++) {
+        arr[i] = binStr.charCodeAt(i)
+    }
+    return new Blob([arr], { type })
+}
 
-    const onError = (error: Error | undefined) => {
-        setError(error?.message);
-    };
+function GLTFModel({ gltfUrl }: { gltfUrl: string }) {
+    const gltf = useLoader(GLTFLoader, gltfUrl)
+    return <primitive object={gltf.scene} />
+}
+
+export default function Model({ endpoint, parameters, onError }: { endpoint: string, parameters: any, onError: (error: any) => void }) {
+    const [gltfUrl, setGltfUrl] = useState<string | null>(null)
+
+    useEffect(() => {
+        // Async function to fetch GLTF data based on Size
+        const fetchGltfData = async (params: typeof parameters) => {
+            try {
+                const response = await fetch(`http://localhost:5221/${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: convertParameters(params),
+                    mode: 'cors',
+                })
+                const data = await response.json()
+                const gltfBase64 = data.gltf
+                const gltfBlob = base64ToBlob(gltfBase64, 'model/gltf-binary')
+                const url = URL.createObjectURL(gltfBlob)
+                setGltfUrl(url)
+            } catch (error) {
+                onError(`${endpoint}: ${error}\n${JSON.stringify(parameters)}`)
+                setGltfUrl(null)
+            }
+        }
+
+        fetchGltfData(parameters)
+    }, [parameters, onError]) // This will re-run the effect whenever the Size value changes
 
     return (
-        <div className="relative w-full h-full"> {/* Ensure the parent div is relative for absolute positioning within it */}
-            <Canvas className="w-full h-full"
-                camera={{
-                    position: [10, 20, 10], // Set the default camera position
-                }}
-            >
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[-2, 5, 2]} intensity={1} />
-                <PostRequestElement onError={onError}/>
-                <OrbitControls target={[0, 0, 0]} />
-            </Canvas>
-            {error && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-4 py-2 border border-red-500 rounded-md shadow-lg text-red-500">
-                    Error: {error}
-                </div>
-            )}
-        </div>
-    );
+        <Suspense fallback={<mesh></mesh>}>
+            {gltfUrl && <GLTFModel gltfUrl={gltfUrl} />}
+        </Suspense>
+    )
 }
