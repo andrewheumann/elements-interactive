@@ -31,6 +31,13 @@ public static class App
 
         var app = builder.Build();
         app.UseCors("AllowAnyOrigin");
+
+
+        app.MapGet("/", () =>
+        {
+            return Results.Ok("This is just the `/` endpoint. You probably meant to provide a different route!");
+        });
+        
         return app;
     }
 

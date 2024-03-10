@@ -14,12 +14,33 @@ export default function ThreeDView() {
     };
 
     // The parameters for the model should match the parameters in the `ModelRequest` class on the server.
-    const parameters = useControls({
+    const cubeParameters = useControls('cube', {
         Width: 10,
         Depth: 20,
         Height: 10,
         Color: '#ff0000',
     })
+
+    // const gridParameters = useControls('grid', {
+    //     U: {
+    //         value: 4,
+    //         min: 1,
+    //         max: 12,
+    //         step: 1,
+    //       },
+    //     V: {
+    //         value: 4,
+    //         min: 1,
+    //         max: 12,
+    //         step: 1,
+    //       },
+    //     Size: 10.0,
+    //     Point: {
+    //         value: { x: 0, y: 0 },
+    //         max: 20,
+    //         min: -20,
+    //     }
+    // })
 
     return (
         <div className="relative w-full h-full"> {/* Ensure the parent div is relative for absolute positioning within it */}
@@ -49,15 +70,15 @@ export default function ThreeDView() {
                 {/* Or you can pass in parameters from `useControls`, which makes the parameters interactive. */}
                 <Model
                     endpoint={'model'}
-                    parameters={parameters}
+                    parameters={cubeParameters}
                     onError={onError}
                 />
                 {/* You can have as many different endpoints as you want! */}
-                <Model
+                {/* <Model
                     endpoint={'grid'}
-                    parameters={{ Size: 20, U: 10, V: 3 }}
+                    parameters={gridParameters}
                     onError={onError}
-                />
+                /> */}
 
             </Canvas>
             {error && (

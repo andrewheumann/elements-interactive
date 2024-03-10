@@ -13,9 +13,17 @@ export const convertParameters = (args: Record<string, any>) => {
             } else {
                 argsConverted[key] = value
             }
+        } else if (typeof value === 'object') {
+            if ('x' in value && 'y' in value) {
+                argsConverted[key] = { X: value.x, Y: value.y, Z: value.z ?? 0.0 }
+            } else {
+                argsConverted[key] = value
+            }
+
         } else {
             argsConverted[key] = value
         }
     })
+    console.log(argsConverted)
     return JSON.stringify(argsConverted)
 }
