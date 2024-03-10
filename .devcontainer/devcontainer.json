@@ -5,7 +5,8 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-bookworm",
 	"features": {
-		"ghcr.io/devcontainers/features/node:1": {}
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
 
 	"containerEnv": {
@@ -34,7 +35,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "echo NEXT_PUBLIC_API_URL=https://$CODESPACE_NAME-5221.$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN/ > client/.env && cd client && npm install",
-
+	"pos"
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
